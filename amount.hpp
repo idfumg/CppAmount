@@ -6,26 +6,26 @@
 #include <iomanip>
 
 template<std::size_t FRACTION_SIZE>
-class AmountX {
+class Amount {
     using string_view = proxy_containers::string_view;
 
 public:
-    constexpr AmountX(const std::int64_t fixedpoint) noexcept
+    constexpr Amount(const std::int64_t fixedpoint) noexcept
         : m_fixedpoint{fixedpoint}
     {
 
     }
 
-    constexpr AmountX(const proxy_containers::string_view& str) noexcept
+    constexpr Amount(const proxy_containers::string_view& str) noexcept
         : m_fixedpoint{ParseMoney(IsNegative(str) ? str.substr(1) : str) * (IsNegative(str) ? -1 : 1)}
     {
 
     }
 
 public:
-    static constexpr AmountX fromTwoDigitsFraction(const std::int64_t value) noexcept
+    static constexpr Amount fromTwoDigitsFraction(const std::int64_t value) noexcept
     {
-        return AmountX(value * 100);
+        return Amount(value * 100);
     }
 
     constexpr std::int64_t fixedpoint() const noexcept
@@ -33,74 +33,74 @@ public:
         return m_fixedpoint;
     }
 
-    constexpr bool operator==(const AmountX& right) const noexcept
+    constexpr bool operator==(const Amount& right) const noexcept
     {
         return m_fixedpoint == right.m_fixedpoint;
     }
 
-    constexpr bool operator!=(const AmountX& right) const noexcept
+    constexpr bool operator!=(const Amount& right) const noexcept
     {
         return m_fixedpoint != right.m_fixedpoint;
     }
 
-    constexpr bool operator<(const AmountX& right) const noexcept
+    constexpr bool operator<(const Amount& right) const noexcept
     {
         return m_fixedpoint - right.m_fixedpoint < 0;
     };
 
-    constexpr bool operator<=(const AmountX& right) const noexcept
+    constexpr bool operator<=(const Amount& right) const noexcept
     {
         return *this < right or *this == right;
     };
 
-    constexpr bool operator>(const AmountX& right) const noexcept
+    constexpr bool operator>(const Amount& right) const noexcept
     {
         return not (*this < right);
     };
 
-    constexpr bool operator>=(const AmountX& right) const noexcept
+    constexpr bool operator>=(const Amount& right) const noexcept
     {
         return *this > right or *this == right;
     };
 
-    constexpr AmountX& operator+=(const AmountX& right) noexcept
+    constexpr Amount& operator+=(const Amount& right) noexcept
     {
         m_fixedpoint += right.m_fixedpoint; return *this;
     }
 
-    constexpr AmountX& operator-=(const AmountX& right) noexcept
+    constexpr Amount& operator-=(const Amount& right) noexcept
     {
         m_fixedpoint -= right.m_fixedpoint; return *this;
     }
 
-    constexpr AmountX operator+(const AmountX& amount) const noexcept
+    constexpr Amount operator+(const Amount& amount) const noexcept
     {
-        return AmountX{m_fixedpoint + amount.m_fixedpoint};
+        return Amount{m_fixedpoint + amount.m_fixedpoint};
     };
 
-    constexpr AmountX operator-(const AmountX& amount) const noexcept
+    constexpr Amount operator-(const Amount& amount) const noexcept
     {
-        return AmountX{m_fixedpoint - amount.m_fixedpoint};
+        return Amount{m_fixedpoint - amount.m_fixedpoint};
     };
 
-    constexpr AmountX operator*(const AmountX& amount) const noexcept
+    constexpr Amount operator*(const Amount& amount) const noexcept
     {
-        return AmountX{MulMoney(m_fixedpoint, amount.m_fixedpoint)};
+        return Amount{MulMoney(m_fixedpoint, amount.m_fixedpoint)};
     }
 
-    constexpr AmountX operator/(const AmountX& amount) const noexcept
+    constexpr Amount operator/(const Amount& amount) const noexcept
     {
-        return AmountX{DivMoney(m_fixedpoint, amount.m_fixedpoint)};
+        return Amount{DivMoney(m_fixedpoint, amount.m_fixedpoint)};
     }
 
-    constexpr AmountX operator-() const noexcept
+    constexpr Amount operator-() const noexcept
     {
-        return AmountX(-m_fixedpoint);
+        return Amount(-m_fixedpoint);
     }
 
-    constexpr AmountX roundFraction(const std::int64_t digit_position) const noexcept
+    constexpr Amount roundFraction(const std::int64_t digit_position) const noexcept
     {
-        return AmountX(RoundNumberFraction(m_fixedpoint, digit_position));
+        return Amount(RoundNumberFraction(m_fixedpoint, digit_position));
     }
 
     std::string fixedpointStr() const noexcept
